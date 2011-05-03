@@ -1,0 +1,48 @@
+
+{
+  "Name" : "Testfile",
+
+  "Info" : "Description for testfile analysis",
+
+  "Input" : {
+    "Item" : {
+      "Description" : "A class name is needed"
+    },
+    "File" : {
+      "Description" : "Some information about the input file"
+    },
+    "Filelist" : {
+      "Description" : "Some information about the input files"
+    }
+  },
+
+  "IntervalDomain" : {
+    "Available" : false
+  },
+
+  "ContextSensitive" : {
+    "Available" : true
+  },
+
+  "PathSensitive" : {
+    "Available" : false
+  },
+
+  "Result" : {
+    "Errors" : {
+      "Help" : "Error format help string"
+    },
+    "Warnings" : {
+      "Help" : "Warning format help string"
+    },
+    "Messages" : {
+      "Help" : "Message format help string"
+    },
+  },
+
+  "Dependencies" : ["Base"],
+
+  "Solvers" : [],
+
+  "goblint" : "--only-test-file"
+}

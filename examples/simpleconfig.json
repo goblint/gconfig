@@ -1,0 +1,28 @@
+
+{
+  "Mutex" : {
+    "Input" : {
+
+    },
+
+    "ContextSensitive" : false,
+
+    "PathSensitive" : true,
+
+    "Preprocessing" : "test.exe -all",
+
+    "IntervalDomain" : {
+      "Trier" : false,
+      "Interval" : false
+    },
+
+    "Solver" : "solverConSideRR",
+
+    "Result" : {
+      "Errors" : "error format string",
+      "Warnings" : "warning format string",
+      "Messages" : "message format string"
+    }
+
+  }
+}

@@ -1,0 +1,42 @@
+
+{
+  "Name" : "Mutex",
+
+  "Info" : "Description for mutex analysis",
+
+  "Input" : {
+    "Filelist" : {
+      "Description" : "Some information about the input files"
+    }
+  },
+
+  "IntervalDomain" : {
+    "Available" : true
+  },
+
+  "ContextSensitive" : {
+    "Available" : true
+  },
+
+  "PathSensitive" : {
+    "Available" : true
+  },
+
+  "Result" : {
+    "Errors" : {
+      "Help" : "Error format help string"
+    },
+    "Warnings" : {
+      "Help" : "Warning format help string"
+    },
+    "Messages" : {
+      "Help" : "Message format help string"
+    },
+  },
+
+  "Dependencies" : [],
+
+  "Solvers" : [],
+
+  "goblint" : "--analysis mutex"
+}
