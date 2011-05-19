@@ -11,6 +11,8 @@
 
     "Preprocessing" : "test.exe -all",
 
+    "Arguments" : "--testarg",
+
     "IntervalDomain" : {
       "Trier" : false,
       "Interval" : false

@@ -10,7 +10,8 @@ import org.json.JSONArray;
 public class Analysis {
 	boolean selected = false;
 	String name = "";
-	String info = ""; 
+	String info = "";
+	InputInfo input[];
 	IntervalDomainInfo intervalDomain = new IntervalDomainInfo();
 	DefaultBoolInfo contextSen = new DefaultBoolInfo();
 	DefaultBoolInfo pathSen = new DefaultBoolInfo();
@@ -19,6 +20,7 @@ public class Analysis {
 	String selectedSolver = "";
 	String goblintCmdLine = "";
 	String preprocessingCmdLine = "";
+	String arguments = "";
 	OutputFormatInfo resultErrors = new OutputFormatInfo();
 	OutputFormatInfo resultWarnings = new OutputFormatInfo();
 	OutputFormatInfo resultMessages = new OutputFormatInfo();
@@ -47,6 +49,22 @@ public class Analysis {
 				name = jsonObj.getString("Name");
 				info = jsonObj.getString("Info");
 				
+				// Input info
+				jsonObj2 = jsonObj.getJSONObject("Input");
+				String names[] = JSONObject.getNames(jsonObj2);
+				if (names != null) {
+					input = new InputInfo[names.length];
+					for (int i = 0; i < names.length; i++) {
+						jsonObj3 = jsonObj2.getJSONObject(names[i]);
+						input[i] = new InputInfo();
+						input[i].name = names[i];
+						input[i].type = jsonObj3.getString("Type");
+						input[i].description = jsonObj3.getString("Description");
+						System.out.println(names[i]);
+					}
+				}
+
+				// Other info
 				jsonObj2 = jsonObj.getJSONObject("ContextSensitive");
 				contextSen.available = jsonObj2.getBoolean("Available");
 				
@@ -93,6 +111,13 @@ public class Analysis {
 		}
 	}
 
+}
+
+class InputInfo {
+	String name = "";
+	String type = "";
+	String description = "";
+	String files[] = null;
 }
 
 class IntervalDomainInfo {

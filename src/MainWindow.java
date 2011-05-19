@@ -47,7 +47,7 @@ public class MainWindow extends JFrame {
 	private JMenuItem jMenuItem_SaveAs = null;
 	private JMenuItem jMenuItem_Exit = null;
 	private JPanel jPanel_InfoBar = null;
-	private JLabel jLabel = null;
+	private JLabel jLabel_Status = null;
 	private JSplitPane jSplitPane = null;
 	private JPanel jPanel_Left = null;
 	private JPanel jPanel_Right = null;
@@ -120,6 +120,10 @@ public class MainWindow extends JFrame {
 	// Help variables to avoid update events in some situations
 	boolean cbAnalysisUpdate = true;
 	boolean cbSolverUpdate = true;
+	private JLabel jLabel15 = null;
+	private JTextField jTextField_Arguments = null;
+	private JButton jButton1 = null;
+	private JButton jButton6 = null;
 	
 	
 	
@@ -129,6 +133,8 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		super();
 		initialize();
+		
+		UpdateStatusbar();
 	}
 
 	/**
@@ -265,16 +271,17 @@ public class MainWindow extends JFrame {
 		if (jPanel_InfoBar == null) {
 			GridLayout gridLayout = new GridLayout();
 			gridLayout.setRows(1);
-			jLabel = new JLabel();
-			jLabel.setText("   No gconfig file loaded!");
-			jLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabel.setBackground(Color.white);
+			jLabel_Status = new JLabel();
+			jLabel_Status.setText("   No gconfig file loaded!");
+			jLabel_Status.setFont(new Font("Dialog", Font.PLAIN, 12));
+			jLabel_Status.setDisplayedMnemonic(KeyEvent.VK_UNDEFINED);
+			jLabel_Status.setBackground(Color.white);
 			jPanel_InfoBar = new JPanel();
 			jPanel_InfoBar.setBackground(Color.white);
 			jPanel_InfoBar.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 			jPanel_InfoBar.setLayout(gridLayout);
 			jPanel_InfoBar.setPreferredSize(new Dimension(0, 24));
-			jPanel_InfoBar.add(jLabel, null);
+			jPanel_InfoBar.add(jLabel_Status, null);
 		}
 		return jPanel_InfoBar;
 	}
@@ -372,11 +379,11 @@ public class MainWindow extends JFrame {
 			jButton.setBounds(new Rectangle(30, 80, 223, 38));
 			jButton.setText("Create new configuration");
 			jButton.addMouseListener(new java.awt.event.MouseAdapter() {
-				public void mouseClicked(java.awt.event.MouseEvent e) {
+				public void mouseClicked(java.awt.event.MouseEvent e) {					
 					// Create new configuration file					
-					configFile.createNew();
+					CreateConfigurationFile();
 					
-					// Show configuration overview					
+					// Show configuration overview
 					jTabbedPane.setSelectedIndex(1);
 				}
 			});
@@ -396,18 +403,7 @@ public class MainWindow extends JFrame {
 			jButton_OpenConfig.setText("Open configuration from file");
 			jButton_OpenConfig.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					JFileChooser fc = new JFileChooser();
-					fc.setCurrentDirectory(new File(settings.workingDir));
-					fc.showOpenDialog(null);
-					File selectedFile = fc.getSelectedFile();
-					if (selectedFile != null) {
-						// Open configuration file
-						if (configFile.openFromFile(selectedFile.getAbsolutePath())) {
-							// Show configuration overview					
-							jTabbedPane.setSelectedIndex(1);
-							updateNavBar();
-						}
-					}
+					OpenConfigurationFile();
 				}
 			});
 		}
@@ -521,6 +517,11 @@ public class MainWindow extends JFrame {
 			jButton3 = new JButton();
 			jButton3.setBounds(new Rectangle(45, 330, 136, 31));
 			jButton3.setText("Save");
+			jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					configFile.saveToFile(configFile.fileName);
+				}
+			});
 		}
 		return jButton3;
 	}
@@ -621,7 +622,7 @@ public class MainWindow extends JFrame {
 	private JPanel getJPanel_Analysis() {
 		if (jPanel_Analysis == null) {
 			jLabel8 = new JLabel();
-			jLabel8.setBounds(new Rectangle(15, 45, 512, 18));
+			jLabel8.setBounds(new Rectangle(15, 45, 512, 19));
 			jLabel8.setText("Info text");
 			jLabel1111 = new JLabel();
 			jLabel1111.setBounds(new Rectangle(15, 15, 271, 31));
@@ -632,6 +633,8 @@ public class MainWindow extends JFrame {
 			jPanel_Analysis.add(jLabel1111, null);
 			jPanel_Analysis.add(jLabel8, null);
 			jPanel_Analysis.add(getJTabbedPane1(), null);
+			jPanel_Analysis.add(getJButton1(), null);
+			jPanel_Analysis.add(getJButton6(), null);
 		}
 		return jPanel_Analysis;
 	}
@@ -780,16 +783,20 @@ public class MainWindow extends JFrame {
 	 */
 	private JPanel getJPanel_Options() {
 		if (jPanel_Options == null) {
+			jLabel15 = new JLabel();
+			jLabel15.setBounds(new Rectangle(30, 86, 114, 17));
+			jLabel15.setDisplayedMnemonic(KeyEvent.VK_UNDEFINED);
+			jLabel15.setText("Arguments:");
 			jLabel_IntervalDomain = new JLabel();
-			jLabel_IntervalDomain.setBounds(new Rectangle(30, 90, 106, 16));
+			jLabel_IntervalDomain.setBounds(new Rectangle(30, 118, 115, 16));
 			jLabel_IntervalDomain.setDisplayedMnemonic(KeyEvent.VK_UNDEFINED);
 			jLabel_IntervalDomain.setEnabled(true);
 			jLabel_IntervalDomain.setText("IntervalDomain:");
 			jLabel12 = new JLabel();
-			jLabel12.setBounds(new Rectangle(30, 150, 73, 16));
+			jLabel12.setBounds(new Rectangle(30, 178, 88, 16));
 			jLabel12.setText("Solver:");
 			jLabel10 = new JLabel();
-			jLabel10.setBounds(new Rectangle(30, 60, 102, 16));
+			jLabel10.setBounds(new Rectangle(30, 60, 112, 16));
 			jLabel10.setText("Preprocessing:");
 			jPanel_Options = new JPanel();
 			jPanel_Options.setLayout(null);
@@ -802,6 +809,8 @@ public class MainWindow extends JFrame {
 			jPanel_Options.add(jLabel_IntervalDomain, null);
 			jPanel_Options.add(getJCheckBox_Trier(), null);
 			jPanel_Options.add(getJCheckBox_Interval(), null);
+			jPanel_Options.add(jLabel15, null);
+			jPanel_Options.add(getJTextField_Arguments(), null);
 		}
 		return jPanel_Options;
 	}
@@ -814,7 +823,7 @@ public class MainWindow extends JFrame {
 	private JCheckBox getJCheckBox_ContextSen() {
 		if (jCheckBox_ContextSen == null) {
 			jCheckBox_ContextSen = new JCheckBox();
-			jCheckBox_ContextSen.setBounds(new Rectangle(26, 14, 149, 16));
+			jCheckBox_ContextSen.setBounds(new Rectangle(26, 14, 167, 16));
 			jCheckBox_ContextSen.setText("Context Sensitive");
 			jCheckBox_ContextSen.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -834,7 +843,7 @@ public class MainWindow extends JFrame {
 	private JCheckBox getJCheckBox_PathSen() {
 		if (jCheckBox_PathSen == null) {
 			jCheckBox_PathSen = new JCheckBox();
-			jCheckBox_PathSen.setBounds(new Rectangle(26, 34, 151, 16));
+			jCheckBox_PathSen.setBounds(new Rectangle(26, 34, 166, 16));
 			jCheckBox_PathSen.setText("Path Sensitive");
 			jCheckBox_PathSen.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -854,7 +863,7 @@ public class MainWindow extends JFrame {
 	private JCheckBox getJCheckBox_Trier() {
 		if (jCheckBox_Trier == null) {
 			jCheckBox_Trier = new JCheckBox();
-			jCheckBox_Trier.setBounds(new Rectangle(150, 90, 91, 16));
+			jCheckBox_Trier.setBounds(new Rectangle(149, 118, 91, 16));
 			jCheckBox_Trier.setText("Trier");
 			jCheckBox_Trier.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -880,7 +889,7 @@ public class MainWindow extends JFrame {
 	private JCheckBox getJCheckBox_Interval() {
 		if (jCheckBox_Interval == null) {
 			jCheckBox_Interval = new JCheckBox();
-			jCheckBox_Interval.setBounds(new Rectangle(150, 110, 91, 16));
+			jCheckBox_Interval.setBounds(new Rectangle(149, 138, 91, 16));
 			jCheckBox_Interval.setText("Interval");
 			jCheckBox_Interval.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -906,7 +915,7 @@ public class MainWindow extends JFrame {
 	private JTextField getJTextField_Preprocessing() {
 		if (jTextField_Preprocessing == null) {
 			jTextField_Preprocessing = new JTextField();
-			jTextField_Preprocessing.setBounds(new Rectangle(146, 59, 271, 20));
+			jTextField_Preprocessing.setBounds(new Rectangle(146, 59, 300, 20));
 			jTextField_Preprocessing.addCaretListener(new javax.swing.event.CaretListener() {
 				public void caretUpdate(javax.swing.event.CaretEvent e) {
 					JTextField jtf = (JTextField)e.getSource();
@@ -925,7 +934,7 @@ public class MainWindow extends JFrame {
 	private JComboBox getJComboBox_Solver() {
 		if (jComboBox_Solver == null) {
 			jComboBox_Solver = new JComboBox();
-			jComboBox_Solver.setBounds(new Rectangle(150, 150, 166, 16));
+			jComboBox_Solver.setBounds(new Rectangle(149, 178, 166, 16));
 			jComboBox_Solver.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					if (cbSolverUpdate) {
@@ -945,26 +954,26 @@ public class MainWindow extends JFrame {
 	private JPanel getJPanel_Output() {
 		if (jPanel_Output == null) {
 			jLabel_MessagesFormatInfo = new JLabel();
-			jLabel_MessagesFormatInfo.setBounds(new Rectangle(135, 190, 166, 16));
+			jLabel_MessagesFormatInfo.setBounds(new Rectangle(135, 190, 317, 16));
 			jLabel_MessagesFormatInfo.setText("Message format string info");
 			jLabel17 = new JLabel();
-			jLabel17.setBounds(new Rectangle(47, 167, 74, 16));
+			jLabel17.setBounds(new Rectangle(47, 167, 81, 16));
 			jLabel17.setText("Messages:");
 			jLabel_WarningsFormatInfo = new JLabel();
-			jLabel_WarningsFormatInfo.setBounds(new Rectangle(136, 131, 165, 16));
+			jLabel_WarningsFormatInfo.setBounds(new Rectangle(136, 131, 317, 16));
 			jLabel_WarningsFormatInfo.setText("Warning format string info");
 			jLabel16 = new JLabel();
-			jLabel16.setBounds(new Rectangle(46, 104, 75, 16));
+			jLabel16.setBounds(new Rectangle(46, 104, 81, 16));
 			jLabel16.setText("Warnings:");
 			jLabel_ErrorsFormatInfo = new JLabel();
-			jLabel_ErrorsFormatInfo.setBounds(new Rectangle(135, 70, 271, 16));
+			jLabel_ErrorsFormatInfo.setBounds(new Rectangle(135, 70, 317, 16));
 			jLabel_ErrorsFormatInfo.setText("Error format string info");
 			jLabel14 = new JLabel();
-			jLabel14.setBounds(new Rectangle(46, 44, 51, 16));
+			jLabel14.setBounds(new Rectangle(46, 44, 81, 16));
 			jLabel14.setText("Errors:");
 			jLabel13 = new JLabel();
 			jLabel13.setText("Result format strings:");
-			jLabel13.setBounds(new Rectangle(15, 15, 136, 16));
+			jLabel13.setBounds(new Rectangle(15, 15, 155, 16));
 			jPanel_Output = new JPanel();
 			jPanel_Output.setLayout(null);
 			jPanel_Output.add(jLabel13, null);
@@ -1078,6 +1087,11 @@ public class MainWindow extends JFrame {
 		if (jMenuItem_Settings == null) {
 			jMenuItem_Settings = new JMenuItem();
 			jMenuItem_Settings.setText("Settings");
+			jMenuItem_Settings.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					ShowSettingsDialog();
+				}
+			});
 		}
 		return jMenuItem_Settings;
 	}
@@ -1106,6 +1120,71 @@ public class MainWindow extends JFrame {
 			jMenuItem_Info.setText("About");
 		}
 		return jMenuItem_Info;
+	}
+	
+	/**
+	 * This method initializes jTextField_Arguments	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getJTextField_Arguments() {
+		if (jTextField_Arguments == null) {
+			jTextField_Arguments = new JTextField();
+			jTextField_Arguments.setBounds(new Rectangle(146, 85, 300, 20));
+			jTextField_Arguments.addCaretListener(new javax.swing.event.CaretListener() {
+				public void caretUpdate(javax.swing.event.CaretEvent e) {
+					JTextField jtf = (JTextField)e.getSource();
+					selectedAnalysis.arguments = jtf.getText();
+				}
+			});
+		}
+		return jTextField_Arguments;
+	}
+	
+	void CreateConfigurationFile()
+	{
+		JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(new File(settings.workingDir));
+		fc.showSaveDialog(null);
+		File selectedFile = fc.getSelectedFile();
+		if (selectedFile != null) {
+			// Create configuration file
+			if (configFile.createNew(selectedFile.getAbsolutePath())) {
+				updateNavBar();
+				jTabbedPane.setSelectedIndex(1);
+				UpdateStatusbar();
+			}
+		}
+	}
+	
+	void OpenConfigurationFile()
+	{
+		JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(new File(settings.workingDir));
+		fc.showOpenDialog(null);
+		File selectedFile = fc.getSelectedFile();
+		if (selectedFile != null) {
+			// Open configuration file
+			if (configFile.openFromFile(selectedFile.getAbsolutePath())) {
+				// Show configuration overview					
+				jTabbedPane.setSelectedIndex(1);
+				updateNavBar();
+				UpdateStatusbar();
+			}
+		}
+	}
+	
+	void SaveConfigurationFile()
+	{
+		JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(new File(settings.workingDir));
+		fc.showSaveDialog(null);
+		File selectedFile = fc.getSelectedFile();
+		if (selectedFile != null) {
+			// Save configuration file
+			configFile.saveToFile(selectedFile.getAbsolutePath());
+			UpdateStatusbar();
+		}
 	}
 	
 	// Updates the navigation bar; decides which buttons are enabled
@@ -1145,6 +1224,9 @@ public class MainWindow extends JFrame {
 		// Preprocessor command line
 		jTextField_Preprocessing.setText(selectedAnalysis.preprocessingCmdLine);
 		
+		// Arguments
+		jTextField_Arguments.setText(selectedAnalysis.arguments);
+		
 		// Result format strings
 		jTextField_ErrorsFormat.setText(selectedAnalysis.resultErrors.format);
 		jLabel_ErrorsFormatInfo.setText(selectedAnalysis.resultErrors.help);
@@ -1168,7 +1250,53 @@ public class MainWindow extends JFrame {
 		cbSolverUpdate = true;
 
 	}
+	
+	void UpdateStatusbar()
+	{
+		if (configFile.fileName.equals("")) {
+			jLabel_Status.setText("   No file loaded!");
+		}
+		else {
+			jLabel_Status.setText("   File loaded: "+configFile.fileName);
+		}
+	}
+	
+	static void ShowSettingsDialog()
+	{
+		gconfig.settingsWindow.jTextField_GoblintPath.setText(settings.goblintPath);
+		gconfig.settingsWindow.jCheckBox_ShowDialog.setSelected(settings.showSettingsDialog);
+		
+		gconfig.mainWindow.setEnabled(false);
+		gconfig.settingsWindow.setVisible(true);
+	}
 
+	/**
+	 * This method initializes jButton1	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton1() {
+		if (jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setBounds(new Rectangle(410, 365, 115, 25));
+			jButton1.setText("Next");
+		}
+		return jButton1;
+	}
+
+	/**
+	 * This method initializes jButton6	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton6() {
+		if (jButton6 == null) {
+			jButton6 = new JButton();
+			jButton6.setBounds(new Rectangle(15, 365, 115, 25));
+			jButton6.setText("Previous");
+		}
+		return jButton6;
+	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 

@@ -5,15 +5,6 @@
   "Info" : "Description for testfile analysis",
 
   "Input" : {
-    "Item" : {
-      "Description" : "A class name is needed"
-    },
-    "File" : {
-      "Description" : "Some information about the input file"
-    },
-    "Filelist" : {
-      "Description" : "Some information about the input files"
-    }
   },
 
   "IntervalDomain" : {

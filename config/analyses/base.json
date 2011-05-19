@@ -5,8 +5,9 @@
   "Info" : "Description for base analysis",
 
   "Input" : {
-    "Filelist" : {
-      "Description" : "Some information about the input files"
+    "cfiles" : {
+      "Type" : "filelist",
+      "Description" : "A C-Program or a fragment thereof"
     }
   },
 

@@ -5,6 +5,7 @@ import org.json.*;
 public class gconfig
 {
 	static MainWindow mainWindow = null;
+	static SettingsWindow settingsWindow = null;
 
 	public static void main(String[] args)
 	{
@@ -15,9 +16,14 @@ public class gconfig
 		configFile.initialize();
 		
 		// Create and show configuration window
-		if (args.length == 0) {			
+		if (args.length == 0) {
 			mainWindow = new MainWindow();
 			mainWindow.setVisible(true);
+			
+			settingsWindow = new SettingsWindow();
+			if (settings.showSettingsDialog) {
+				MainWindow.ShowSettingsDialog();
+			}
 		}
 		
 		// Run goblint command line
@@ -28,7 +34,7 @@ public class gconfig
 				exitStatus = Runtime.getRuntime().exec(configFile.createCommandLine()).exitValue();
 			}
 			catch (java.io.IOException e) {
-			}			
+			}
 			System.exit(exitStatus);
 		}
 		

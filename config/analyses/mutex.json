@@ -5,9 +5,6 @@
   "Info" : "Description for mutex analysis",
 
   "Input" : {
-    "Filelist" : {
-      "Description" : "Some information about the input files"
-    }
   },
 
   "IntervalDomain" : {
