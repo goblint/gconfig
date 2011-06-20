@@ -2,13 +2,14 @@
 {
   "Name" : "Base",
 
+  "GoblintFeatureName" : "base",
+
   "Info" : "Description for base analysis",
 
   "Input" : {
-    "cfiles" : {
-      "Type" : "filelist",
-      "Description" : "A C-Program or a fragment thereof"
-    }
+  },
+
+  "GlobalInput" : {
   },
 
   "IntervalDomain" : {
@@ -39,5 +40,5 @@
 
   "Solvers" : [],
 
-  "goblint" : "--analysis base"
+  "goblint" : ""
 }

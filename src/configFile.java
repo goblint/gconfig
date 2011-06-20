@@ -9,6 +9,9 @@ import org.json.*;
 public class configFile { 
 	static String fileName = "";
 	static Analysis[] analysis = null;
+	static ArrayList inputFiles = new ArrayList();
+	static ArrayList<InputInfo> globalInput = new ArrayList<InputInfo>();
+	static String goblintOptions = "";
 	
 	// FilenameFilter to find only those analysis template files which end with ".json"
 	static FilenameFilter configFilenameFilter = new FilenameFilter() {
@@ -96,7 +99,7 @@ public class configFile {
 					configFile.analysis[i].resultWarnings.format = jsonChildObj.getString("Warnings");
 					configFile.analysis[i].resultMessages.format = jsonChildObj.getString("Messages");	
 				}				
-			}		
+			}
 			
 		}
 		catch (JSONException je) {
@@ -169,6 +172,8 @@ public class configFile {
 	// Initializes all the things needed for configuration
 	static void initialize()
 	{
+		globalInput.clear();
+		
 		// Load all analysis template files from "config\analysis\"
 		File maindir = new File(settings.workingDir+"\\config\\analyses");
 		File filelist[] = maindir.listFiles(configFilenameFilter);
@@ -176,6 +181,7 @@ public class configFile {
 		analysis = new Analysis[filelist.length];
 		for (int i = 0; i < filelist.length; i++) {
 			analysis[i] = new Analysis();
+			analysis[i].id = i;
 			analysis[i].loadTemplate(filelist[i].getAbsolutePath());
 		}
 	}
@@ -183,7 +189,46 @@ public class configFile {
 	// Creates the command line for the current configuration to to run the goblint
 	static String createCommandLine()
 	{
-		return "";
+		// Check goblint path
+		if (settings.goblintPath.length() == 0) return "";
+		
+		// Goblint executable at the beginning of the command line
+		String cmdLine = "\""+settings.goblintPath+"\"";
+		
+		// Analysis name
+		cmdLine = cmdLine+" --analysis name";
+		
+		// Add options for each test
+		for (int i = 0; i < analysis.length; i++) {
+			if (analysis[i].selected) {
+				// Add analysis
+				cmdLine = cmdLine+" --with "+analysis[i].goblintFeatureName;
+				
+				// Add the basic analysis command line string
+				if (analysis[i].goblintCmdLine.equals("") == false) cmdLine = cmdLine+" "+analysis[i].goblintCmdLine;
+				
+				// Context sensitivity
+				if (analysis[i].contextSen.value == true) cmdLine = cmdLine+" --context "+analysis[i].goblintFeatureName;
+				else cmdLine = cmdLine+" --no-context "+analysis[i].goblintFeatureName;
+				
+				// Input arguments
+				for (int k = 0; k < analysis[i].input.length; k++) {
+					if (analysis[i].input[k].argument.equals("") == false) {
+						cmdLine = cmdLine+" "+analysis[i].input[k].argument.replace("%", analysis[i].input[k].value);
+					}
+				}
+			}
+		}
+		
+		// Add input files
+		for (int i = 0; i < inputFiles.size(); i++) {
+			cmdLine = cmdLine+" \""+inputFiles.get(i)+"\"";
+		}
+		
+		if (goblintOptions != "") cmdLine = cmdLine+" "+goblintOptions;
+		
+		// Return command line
+		return cmdLine;
 	}
 	
 }

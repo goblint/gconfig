@@ -9,9 +9,11 @@ import org.json.JSONArray;
 // This class describes one analysis containing information about the format and the values itself
 public class Analysis {
 	boolean selected = false;
+	int id = 0;
 	String name = "";
+	String goblintFeatureName = "";
 	String info = "";
-	InputInfo input[];
+	InputInfo input[] = new InputInfo[0];
 	IntervalDomainInfo intervalDomain = new IntervalDomainInfo();
 	DefaultBoolInfo contextSen = new DefaultBoolInfo();
 	DefaultBoolInfo pathSen = new DefaultBoolInfo();
@@ -47,6 +49,7 @@ public class Analysis {
 				JSONObject jsonObj2, jsonObj3, jsonObj = new JSONObject(fileStr);
 				JSONArray jsonArray;
 				name = jsonObj.getString("Name");
+				goblintFeatureName = jsonObj.getString("GoblintFeatureName");
 				info = jsonObj.getString("Info");
 				
 				// Input info
@@ -59,8 +62,25 @@ public class Analysis {
 						input[i] = new InputInfo();
 						input[i].name = names[i];
 						input[i].type = jsonObj3.getString("Type");
+						input[i].caption = jsonObj3.getString("Caption");
 						input[i].description = jsonObj3.getString("Description");
-						System.out.println(names[i]);
+						input[i].argument = jsonObj3.getString("Argument");
+					}
+				}
+				
+				// Global input info
+				jsonObj2 = jsonObj.getJSONObject("GlobalInput");
+				names = JSONObject.getNames(jsonObj2);
+				if (names != null) {
+					for (int i = 0; i < names.length; i++) {
+						jsonObj3 = jsonObj2.getJSONObject(names[i]);
+						InputInfo myInput = new InputInfo();
+						myInput.name = names[i];
+						myInput.type = jsonObj3.getString("Type");
+						myInput.caption = jsonObj3.getString("Caption");
+						myInput.description = jsonObj3.getString("Description");
+						myInput.argument = jsonObj3.getString("Argument");
+						configFile.globalInput.add(myInput);
 					}
 				}
 
@@ -116,8 +136,10 @@ public class Analysis {
 class InputInfo {
 	String name = "";
 	String type = "";
+	String caption = "";
 	String description = "";
-	String files[] = null;
+	String argument = "";
+	String value = "";
 }
 
 class IntervalDomainInfo {

@@ -2,9 +2,26 @@
 {
   "Name" : "Testfile",
 
-  "Info" : "Description for testfile analysis",
+  "GoblintFeatureName" : "testfile",
+
+  "Info" : "Description for testfile \nanalysis",
 
   "Input" : {
+    "oil" : {
+      "Type" : "file",
+      "Caption" : "Oil-File:",
+      "Description" : "Path to the required oil file",
+      "Argument" : "--oil \"%\""
+    },
+    "classname" : {
+      "Type" : "string",
+      "Caption" : "Class name:",
+      "Description" : "Name of the class to be analyzed",
+      "Argument" : "--class %"
+    }
+  },
+
+  "GlobalInput" : {
   },
 
   "IntervalDomain" : {
@@ -35,5 +52,5 @@
 
   "Solvers" : [],
 
-  "goblint" : "--only-test-file"
+  "goblint" : ""
 }

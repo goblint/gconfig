@@ -2,9 +2,14 @@
 {
   "Name" : "Mutex",
 
+  "GoblintFeatureName" : "mutex",
+
   "Info" : "Description for mutex analysis",
 
   "Input" : {
+  },
+
+  "GlobalInput" : {
   },
 
   "IntervalDomain" : {
@@ -35,5 +40,5 @@
 
   "Solvers" : [],
 
-  "goblint" : "--analysis mutex"
+  "goblint" : ""
 }
